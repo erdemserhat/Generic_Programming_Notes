@@ -85,6 +85,37 @@ void increment() {
         ++counter;  // Non-atomic operation
     }
 }
+template <typename T>
+void foo(const T &t)
+{
+    std::cout << "Function foo: ";
+    std::cout << t;
+    std::cout << std::endl;
+}
+
+
+struct A
+{
+};
+
+std::ostream &
+operator << (std::ostream &os, const A &)
+{
+    os << "A";
+    return os;
+}
+
+// B doesn't have to derive from a base class.
+struct B
+{
+};
+
+std::ostream &
+operator << (std::ostream &os, const B &)
+{
+    os << "B";
+    return os;
+}
 
 
 
@@ -229,7 +260,7 @@ int main() {
     //For a 32-bit unsigned int: range = 0 to 4,294,967,295.
     std::cout<<d<<std::endl; // return 4,294,967,295 insyead of -1, because it reversed.
 
-    auto start = std::chrono::high_resolution_clock::now(); //-> importatn expression
+    auto start = std::chrono::high_resolution_clock::now(); //-> important expression
 
 
 
@@ -249,6 +280,11 @@ int main() {
 
 
 
+
+
+    foo(1);  // Works because int supports <<
+    foo(A());  // Works because operator<<(std::ostream&, const A&) is defined
+    foo(B());  // Works because operator<<(std::ostream&, const B&) is defined
 
 
 
