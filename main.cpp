@@ -13,24 +13,43 @@
 using namespace std;
 
 
-template <template <typename, long unsigned> typename C, typename T>
-void
-foo(T t)
-{
-    cout << __PRETTY_FUNCTION__ << endl;
-    C<T, 1> c1 = {t};
-    C<T, 2> c2 = {t, t};
+struct A {
+
+};
+
+
+
+template<typename T>
+void primaryFunction(const T& arg) {
+    std::cout<<arg<<std::endl;
+}
+
+template<>
+void primaryFunction<A>(const A& args) { // if you like you can ommit <A> because the compile is able to deduce it from  function params
+    std::cout<<"A"<<std::endl;
 }
 
 
+void foo(const int &i)
+{
+    std::cout << "Function foo: " << i << std::endl;
+}
+
+void foo(const A &)
+{
+    std::cout << "Function foo: A" << std::endl;
+}
+
+
+
 int main() {
+    primaryFunction(1);
+    primaryFunction<A>(A());
 
-    foo<array,int>(1);
+    foo(1);
+    foo('1');
+    foo(A());
 
-    // This is cool: pointer to an instantiated function template.  We
-    // instantiate the function right here, because we point to it.
-    void (*fp)(double) = foo<array, double>;
-    fp(.1);
 
 }
 
