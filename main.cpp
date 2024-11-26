@@ -1,55 +1,39 @@
-#include <algorithm>
-#include <iostream>
-#include <ratio>
-#include <vector>
-#include <algorithm>
-#include <iostream>
-#include <list>
-#include <thread>
-#include <vector>
-#include <array>
+#include <utility>
 #include <iostream>
 
 using namespace std;
 
-
-struct A {
-
-};
-
-
-
-template<typename T>
-void primaryFunction(const T& arg) {
-    std::cout<<arg<<std::endl;
-}
-
-template<>
-void primaryFunction<A>(const A& args) { // if you like you can ommit <A> because the compile is able to deduce it from  function params
-    std::cout<<"A"<<std::endl;
-}
-
-
-void foo(const int &i)
+void g()
 {
-    std::cout << "Function foo: " << i << std::endl;
+    cout << __PRETTY_FUNCTION__ << endl;
 }
 
-void foo(const A &)
+void g(int)
 {
-    std::cout << "Function foo: A" << std::endl;
+    cout << __PRETTY_FUNCTION__ << endl;
 }
 
-
-
-int main() {
-    primaryFunction(1);
-    primaryFunction<A>(A());
-
-    foo(1);
-    foo('1');
-    foo(A());
-
-
+void g(int, int)
+{
+    cout << __PRETTY_FUNCTION__ << endl;
 }
 
+int
+main()
+{
+    auto c = [](auto &&...p)
+    {
+        cout << __PRETTY_FUNCTION__ << endl;
+        g(forward<decltype(p)>(p)...);
+        // For no arguments, expanded to:
+        // g();
+        // For one argument, expanded to:
+        // g(forward<decltype(a1)>(a1));
+        // For two arguments, expanded to:
+        // g(forward<decltype(a1)>(a1), forward<decltype(a2)>(a2));
+    };
+
+    c();
+    c(1);
+    c(1, 2);
+}
